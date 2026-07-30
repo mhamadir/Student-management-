@@ -1,0 +1,8 @@
+{
+  "name": "بەڕێوەبردنی فێرخوازان",
+  "description": "Student management app for teachers with offline PWA support and PDF reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

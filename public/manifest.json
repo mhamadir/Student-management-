@@ -1,0 +1,19 @@
+{
+  "name": "بەڕێوەبەری فێرخوازان",
+  "short_name": "فێرخوازان",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F3F4F6",
+  "theme_color": "#4F46E5",
+  "dir": "rtl",
+  "lang": "ku",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
