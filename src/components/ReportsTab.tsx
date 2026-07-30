@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useStore } from '../store';
 import { Download, Search, Trash2 } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
+import { convertToArabicNumerals } from '../utils';
 
 export default function ReportsTab() {
   const { data, activeTeacherId, deleteStudentMarks, clearAllMarks } = useStore();
@@ -64,11 +65,11 @@ export default function ReportsTab() {
       
       const row = [
         `"${student.fullName}"`,
-        `"${student.birthdate || ''}"`,
-        `"${student.phone}"`,
+        `"${student.birthdate ? convertToArabicNumerals(student.birthdate) : ''}"`,
+        `"${student.phone ? convertToArabicNumerals(student.phone) : ''}"`,
         `"${student.job}"`,
-        ...(selectedSubjectId === 'all' ? [`"${classScores}"`] : displaySubjects.map(sub => studentData.marks[sub.name])),
-        studentData.average,
+        ...(selectedSubjectId === 'all' ? [`"${classScores}"`] : displaySubjects.map(sub => `"${studentData.marks[sub.name]}"`)),
+        `"${studentData.average}"`,
         `"${attendanceData.formatted}"`
       ].reverse();
       csvContent += row.join(',') + '\n';
@@ -93,7 +94,7 @@ export default function ReportsTab() {
     displaySubjects.forEach(subject => {
       const mark = data.marks.find(m => m.studentId === studentId && m.subjectId === subject.id);
       if (mark && mark.score !== '') {
-        marksBySubject[subject.name] = mark.score;
+        marksBySubject[subject.name] = convertToArabicNumerals(mark.score);
         totalScore += Number(mark.score);
         count++;
       } else {
@@ -103,7 +104,7 @@ export default function ReportsTab() {
 
     return {
       marks: marksBySubject,
-      average: count > 0 ? (totalScore / count).toFixed(2) : '-'
+      average: count > 0 ? convertToArabicNumerals((totalScore / count).toFixed(2)) : '-'
     };
   };
 
@@ -132,7 +133,7 @@ export default function ReportsTab() {
         absent: absentCount,
         total: validRecords,
         percentage: `${percentage}%`,
-        formatted: `هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`
+        formatted: convertToArabicNumerals(`هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`)
       };
     } else {
       const subjectAttendances: Record<string, string> = {};
@@ -155,7 +156,7 @@ export default function ReportsTab() {
         if (vRecords > 0) {
           const aCount = vRecords - pCount;
           const perc = Math.round((pCount / vRecords) * 100);
-          subjectAttendances[subject.name] = `هاتوو: ${pCount} | نەهاتوو: ${aCount} (${perc}%)`;
+          subjectAttendances[subject.name] = convertToArabicNumerals(`هاتوو: ${pCount} | نەهاتوو: ${aCount} (${perc}%)`);
           totalPresent += pCount;
           totalValid += vRecords;
         } else {
@@ -163,7 +164,7 @@ export default function ReportsTab() {
         }
       });
       
-      const overallPercentage = totalValid > 0 ? `${Math.round((totalPresent / totalValid) * 100)}%` : '-';
+      const overallPercentage = totalValid > 0 ? convertToArabicNumerals(`${Math.round((totalPresent / totalValid) * 100)}%`) : '-';
       const overallAbsent = totalValid - totalPresent;
 
       const formattedAll = displaySubjects
@@ -259,7 +260,7 @@ export default function ReportsTab() {
               <div className="text-center mb-8 pb-6" style={{ borderBottom: '1px solid #e2e8f0' }}>
                 <h1 className="text-2xl font-bold mb-2">ڕاپۆرتی کۆتایی فێرخوازان {selectedSubjectId !== 'all' ? `- ${displaySubjects[0]?.name}` : ''}</h1>
                 <p className="text-sm" style={{ color: '#64748b' }}>
-                  بەروار: {new Date().toLocaleDateString('en-GB')}
+                  بەروار: {convertToArabicNumerals(new Date().toLocaleDateString('en-GB'))}
                 </p>
               </div>
 

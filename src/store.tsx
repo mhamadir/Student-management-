@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AppData, Attendance, Mark, Student, Subject, Teacher } from './types';
+import { convertToArabicNumerals, convertToWesternNumerals } from './utils';
 
 const STORAGE_KEY = 'kurdish_student_app_data';
 
@@ -276,11 +277,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       let grade = '-';
       if (average !== '-') {
         const avg = parseFloat(average);
-        if (avg >= 90) grade = 'A';
-        else if (avg >= 80) grade = 'B';
-        else if (avg >= 70) grade = 'C';
-        else if (avg >= 60) grade = 'D';
-        else grade = 'F';
+        if (avg >= 90) grade = 'نایاب';
+        else if (avg >= 80) grade = 'زۆر باش';
+        else if (avg >= 70) grade = 'باش';
+        else if (avg >= 60) grade = 'مامناوەند';
+        else if (avg >= 50) grade = 'دەرچوو';
+        else grade = 'خراپ';
       }
 
       const studentAttendance = data.attendance.filter(a => a.teacherId === student.teacherId);
@@ -295,17 +297,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
       
       const attendancePercentage = totalAttendance > 0 
-        ? Math.round((presentCount / totalAttendance) * 100) + '%'
+        ? convertToArabicNumerals(Math.round((presentCount / totalAttendance) * 100) + '%')
         : '-';
 
       const row = [
         `"${student.fullName}"`,
-        `"${student.birthdate || ''}"`,
-        `"${student.phone}"`,
+        `"${student.birthdate ? convertToArabicNumerals(student.birthdate) : ''}"`,
+        `"${student.phone ? convertToArabicNumerals(student.phone) : ''}"`,
         `"${student.job}"`,
         `"${classNames}"`,
-        `"${scoresText}"`,
-        average,
+        `"${convertToArabicNumerals(scoresText)}"`,
+        `"${average !== '-' ? convertToArabicNumerals(average) : '-'}"`,
         `"${grade}"`,
         `"${attendancePercentage}"`
       ].reverse();
@@ -411,12 +413,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
 
         const fullName = fullNameIdx !== -1 ? rowCols[fullNameIdx] || '' : rowCols[rowCols.length - 1] || '';
-        const rollNumber = rollNumberIdx !== -1 ? rowCols[rollNumberIdx] || '' : '';
-        const birthdate = birthdateIdx !== -1 ? rowCols[birthdateIdx] || '' : '';
-        const phone = phoneIdx !== -1 ? rowCols[phoneIdx] || '' : '';
+        const rollNumber = convertToWesternNumerals(rollNumberIdx !== -1 ? rowCols[rollNumberIdx] || '' : '');
+        const birthdate = convertToWesternNumerals(birthdateIdx !== -1 ? rowCols[birthdateIdx] || '' : '');
+        const phone = convertToWesternNumerals(phoneIdx !== -1 ? rowCols[phoneIdx] || '' : '');
         const job = jobIdx !== -1 ? rowCols[jobIdx] || '' : '';
         const notes = notesIdx !== -1 ? rowCols[notesIdx] || '' : '';
-        const createdAt = createdAtIdx !== -1 ? rowCols[createdAtIdx] || '' : '';
+        const createdAt = convertToWesternNumerals(createdAtIdx !== -1 ? rowCols[createdAtIdx] || '' : '');
 
         if (!fullName) continue;
 
@@ -452,8 +454,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const rowVals = parseCSVLine(lines[i]);
             if (rowVals.length >= 2) {
               const name = rowVals[nameColIdx] || rowVals[rowVals.length - 1] || '';
-              const scoreStr = rowVals[scoreColIdx] || '';
-              if (name) {
+              let scoreStr = rowVals[scoreColIdx] || '';
+              scoreStr = convertToWesternNumerals(scoreStr);
+              if (name && !name.includes('تێکڕا:') && !name.includes('کۆنمرە:')) {
                 let score: number | '' = '';
                 if (scoreStr !== '' && scoreStr !== '-') {
                   score = Number(scoreStr);
@@ -483,7 +486,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const rowVals = parseCSVLine(lines[i]);
             if (rowVals.length >= 3) {
               const name = rowVals[nameColIdx] || '';
-              const date = rowVals[dateColIdx] || '';
+              let date = rowVals[dateColIdx] || '';
+              date = convertToWesternNumerals(date);
               const statusStr = rowVals[statusColIdx] || '';
               const present = statusStr.includes('هاتوو') && !statusStr.includes('نەهاتوو');
               if (date) {

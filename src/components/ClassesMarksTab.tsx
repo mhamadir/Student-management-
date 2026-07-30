@@ -3,6 +3,7 @@ import { useStore } from '../store';
 import { Subject } from '../types';
 import { Plus, Pencil, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
+import { convertToArabicNumerals, convertToWesternNumerals } from '../utils';
 
 export default function ClassesMarksTab() {
   const { data, activeTeacherId, addSubject, updateSubject, deleteSubject, setMark } = useStore();
@@ -83,11 +84,12 @@ export default function ClassesMarksTab() {
 
   const getGrade = (score: number | '') => {
     if (score === '') return '-';
-    if (score >= 90) return 'A';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'C';
-    if (score >= 60) return 'D';
-    return 'F';
+    if (score >= 90) return 'نایاب';
+    if (score >= 80) return 'زۆر باش';
+    if (score >= 70) return 'باش';
+    if (score >= 60) return 'مامناوەند';
+    if (score >= 50) return 'دەرچوو';
+    return 'خراپ';
   };
 
   return (
@@ -126,7 +128,7 @@ export default function ClassesMarksTab() {
                   <div className="flex items-center gap-4">
                     <h3 className="text-lg font-bold text-slate-800">{subject.name}</h3>
                     <span className="text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-1 rounded-full">
-                      {subject.enrolledStudentIds.length} فێرخواز
+                      {convertToArabicNumerals(subject.enrolledStudentIds.length)} فێرخواز
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -154,13 +156,18 @@ export default function ClassesMarksTab() {
                         <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
                           <span className="text-sm font-semibold text-slate-700">پێدانی نمرە بەکۆمەڵ:</span>
                           <input
-                            type="number"
-                            min="0"
-                            max="100"
+                            type="text"
+                            inputMode="text"
                             placeholder="نمرە"
                             className="w-20 p-1.5 border border-slate-200 rounded text-center font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
-                            value={batchScore[subject.id] || ''}
-                            onChange={(e) => setBatchScore(prev => ({ ...prev, [subject.id]: e.target.value }))}
+                            value={batchScore[subject.id] !== undefined && batchScore[subject.id] !== '' ? convertToArabicNumerals(batchScore[subject.id]) : ''}
+                            onChange={(e) => {
+                              let rawValue = convertToWesternNumerals(e.target.value);
+                              if (rawValue === '' || !isNaN(Number(rawValue))) {
+                                if (rawValue !== '' && (Number(rawValue) < 0 || Number(rawValue) > 100)) return;
+                                setBatchScore(prev => ({ ...prev, [subject.id]: rawValue }));
+                              }
+                            }}
                           />
                           <button
                             onClick={() => applyBatchScore(subject.id)}
@@ -170,7 +177,7 @@ export default function ClassesMarksTab() {
                             جێبەجێکردن
                           </button>
                           <span className="text-xs text-slate-500">
-                            ({selectedStudents[subject.id]?.length || 0} دیاریکراوە)
+                            ({convertToArabicNumerals(selectedStudents[subject.id]?.length || 0)} دیاریکراوە)
                           </span>
                         </div>
                         <div className="overflow-x-auto border border-slate-200 rounded-lg">
@@ -198,8 +205,8 @@ export default function ClassesMarksTab() {
                                   </div>
                                 </th>
                                 <th className="p-3">ناوی فێرخواز</th>
-                                <th className="p-3 w-40">نمرەی کۆتایی (100)</th>
-                                <th className="p-3 w-32 text-center">ئاست (Grade)</th>
+                                <th className="p-3 w-40">نمرەی کۆتایی (١٠٠)</th>
+                                <th className="p-3 w-32 text-center">ئاست</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
@@ -219,15 +226,21 @@ export default function ClassesMarksTab() {
                                     <td className="p-3 font-semibold text-slate-800">{student.fullName}</td>
                                     <td className="p-3">
                                       <input
-                                        type="number"
-                                        min="0"
-                                        max="100"
+                                        type="text"
+                                        inputMode="text"
                                         className="w-full p-2 border border-slate-200 rounded-lg text-center font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
-                                        value={score}
+                                        value={score !== '' ? convertToArabicNumerals(score) : ''}
                                         onChange={(e) => {
-                                          let val: number | '' = e.target.value === '' ? '' : Number(e.target.value);
-                                          if (val !== '' && val > 100) val = 100;
-                                          if (val !== '' && val < 0) val = 0;
+                                          let rawValue = convertToWesternNumerals(e.target.value);
+                                          if (rawValue === '') {
+                                            setMark(student.id, subject.id, '');
+                                            return;
+                                          }
+                                          rawValue = rawValue.replace(/[^0-9]/g, '');
+                                          if (rawValue === '') return;
+                                          let val = Number(rawValue);
+                                          if (val > 100) val = 100;
+                                          if (val < 0) val = 0;
                                           setMark(student.id, subject.id, val);
                                         }}
                                       />
@@ -339,13 +352,22 @@ function SubjectModal({
           <div className="flex flex-col flex-1 min-h-[300px]">
             <div className="flex justify-between items-center mb-3">
               <label className="block text-sm font-semibold text-slate-700">فێرخوازە بەشداربووەکان</label>
-              <button 
-                type="button" 
-                onClick={() => setEnrolledStudentIds(students.map(s => s.id))}
-                className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full transition-colors"
-              >
-                دیاریکردنی هەمووی
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  type="button" 
+                  onClick={() => setEnrolledStudentIds(students.map(s => s.id))}
+                  className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full transition-colors"
+                >
+                  دیاریکردنی هەمووی
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setEnrolledStudentIds([])}
+                  className="text-xs font-medium text-slate-600 hover:text-slate-800 bg-slate-100 px-3 py-1 rounded-full transition-colors"
+                >
+                  لابردنی هەمووی
+                </button>
+              </div>
             </div>
             <div className="border border-slate-200 rounded-xl overflow-y-auto bg-slate-50 flex-1">
               {students.length > 0 ? (

@@ -8,6 +8,7 @@ import ReportsTab from './components/ReportsTab';
 import InstallPWA from './components/InstallPWA';
 import InstallWindows from './components/InstallWindows';
 import { Users, BookOpen, CalendarCheck, FileText, Settings } from 'lucide-react';
+import { convertToArabicNumerals } from './utils';
 
 function AppContent() {
   const { data, activeTeacherId, exportData, importData, importStudentCSV } = useStore();
@@ -70,7 +71,7 @@ function AppContent() {
         alert('فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە');
       }
     } else if (successCount > 0) {
-      alert(`${successCount} فایلی فێرخواز بەسەرکەوتوویی هاوردە کران!`);
+      alert(`${convertToArabicNumerals(successCount)} فایلی فێرخواز بەسەرکەوتوویی هاوردە کران!`);
       setActiveTab('students');
     } else {
        alert('فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە');

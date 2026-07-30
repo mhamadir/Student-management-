@@ -59,11 +59,11 @@ export default function StudentsTab() {
       csvContent += profileHeaders.join(',') + '\n';
       const profileRow = [
         `"${student.fullName}"`,
-        `"${student.birthdate || ''}"`,
-        `"${student.phone || ''}"`,
+        `"${student.birthdate ? convertToArabicNumerals(student.birthdate) : ''}"`,
+        `"${student.phone ? convertToArabicNumerals(student.phone) : ''}"`,
         `"${student.job || ''}"`,
         `"${student.notes ? student.notes.replace(/\n/g, ' ') : ''}"`,
-        `"${student.createdAt || ''}"`
+        `"${student.createdAt ? convertToArabicNumerals(student.createdAt) : ''}"`
       ].reverse();
       csvContent += profileRow.join(',') + '\n\n';
 
@@ -97,10 +97,10 @@ export default function StudentsTab() {
         if (validRecords > 0) {
           const absentCount = validRecords - presentCount;
           const percentage = Math.round((presentCount / validRecords) * 100);
-          attFormatted = `هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`;
+          attFormatted = convertToArabicNumerals(`هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`);
         }
 
-        return { id: sub.id, name: sub.name, score, attendance: attFormatted, detailedLogs };
+        return { id: sub.id, name: sub.name, score: score !== '-' ? convertToArabicNumerals(score) : '-', attendance: attFormatted, detailedLogs };
       });
 
       csvContent += 'وانەکان و نمرەکان\n';
@@ -119,7 +119,7 @@ export default function StudentsTab() {
       classMarks.forEach(cm => {
         cm.detailedLogs.forEach(log => {
           const statusText = log.present ? 'هاتوو' : 'نەهاتوو';
-          const row = [`"${cm.name}"`, `"${log.date}"`, `"${log.weekday}"`, `"${statusText}"`].reverse();
+          const row = [`"${cm.name}"`, `"${convertToArabicNumerals(log.date)}"`, `"${log.weekday}"`, `"${statusText}"`].reverse();
           csvContent += row.join(',') + '\n';
         });
       });
@@ -142,6 +142,65 @@ export default function StudentsTab() {
     document.body.removeChild(link);
   };
 
+  const exportMarksReport = (studentsToExport: Student[]) => {
+    let csvContent = '\uFEFF';
+    
+    studentsToExport.forEach((student, index) => {
+      const studentSubjects = data.subjects.filter(
+        sub => sub.enrolledStudentIds && sub.enrolledStudentIds.includes(student.id)
+      );
+      
+      let totalScore = 0;
+      let validMarksCount = 0;
+      
+      const nameRow = [`"${student.fullName}"`, `""`].reverse();
+      csvContent += nameRow.join(',') + '\n';
+      const headerRow = [`"وانە"`, `"نمرە"`].reverse();
+      csvContent += headerRow.join(',') + '\n';
+      
+      studentSubjects.forEach(sub => {
+        const markObj = data.marks.find(m => m.studentId === student.id && m.subjectId === sub.id);
+        const score = markObj && markObj.score !== '' ? markObj.score : '';
+        
+        const row = [`"${sub.name}"`, `"${score !== '' ? convertToArabicNumerals(score) : ''}"`].reverse();
+        csvContent += row.join(',') + '\n';
+        
+        if (typeof score === 'number' || (typeof score === 'string' && score !== '')) {
+          const numScore = Number(score);
+          if (!isNaN(numScore)) {
+            totalScore += numScore;
+            validMarksCount++;
+          }
+        }
+      });
+      
+      const average = validMarksCount > 0 ? (totalScore / validMarksCount).toFixed(2) : '0';
+      
+      const sumRow = [`"کۆنمرە:"`, `"${convertToArabicNumerals(totalScore)}"`].reverse();
+      csvContent += sumRow.join(',') + '\n';
+      const avgRow = [`"تێکڕا:"`, `"${convertToArabicNumerals(average)}"`].reverse();
+      csvContent += avgRow.join(',') + '\n';
+      
+      if (index < studentsToExport.length - 1) {
+        csvContent += '\n\n';
+      }
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const fileName = studentsToExport.length === 1
+      ? `ڕاپۆرتی_نمرەی_${studentsToExport[0].fullName.replace(/\s+/g, '_')}_${dateStr}.csv`
+      : `ڕاپۆرتی_نمرەی_فێرخوازان_${dateStr}.csv`;
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="h-full flex flex-col">
       <ConfirmModal
@@ -156,7 +215,7 @@ export default function StudentsTab() {
           <div className="px-3.5 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-full text-sm font-semibold flex items-center gap-2 shadow-xs">
             <Users className="w-4 h-4 text-indigo-600" />
             <span>کۆی ژمارەی فێرخوازان:</span>
-            <span className="font-mono text-base font-bold">{students.length}</span>
+            <span className="font-mono text-base font-bold">{convertToArabicNumerals(students.length)}</span>
           </div>
         </div>
         <div className="flex w-full sm:w-auto gap-2">
@@ -167,6 +226,14 @@ export default function StudentsTab() {
           >
             <Download className="w-5 h-5 text-slate-500" />
             <span className="hidden lg:inline text-sm">داگرتنی سەرجەم فێرخوازان</span>
+          </button>
+          <button
+            onClick={() => exportMarksReport(students)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 shadow-sm transition-colors"
+            title="داگرتنی ڕاپۆرتی نمرەی فێرخوازان (Excel / CSV)"
+          >
+            <FileText className="w-5 h-5 text-slate-500" />
+            <span className="hidden lg:inline text-sm">داگرتنی ڕاپۆرتی نمرەکان</span>
           </button>
           <div className="relative flex-grow sm:flex-grow-0">
             <Search className="absolute right-3 top-2.5 text-slate-400 w-5 h-5" />
@@ -210,8 +277,8 @@ export default function StudentsTab() {
                   <td className="p-4 font-semibold text-slate-800">
                     <div>{getDisplayName(student)}</div>
                   </td>
-                  <td className="p-4 text-sm">{student.birthdate || '-'}</td>
-                  <td className="p-4 text-sm font-mono text-slate-600" dir="ltr">{student.phone || '-'}</td>
+                  <td className="p-4 text-sm">{student.birthdate ? convertToArabicNumerals(student.birthdate) : '-'}</td>
+                  <td className="p-4 text-sm font-mono text-slate-600" dir="ltr">{student.phone ? convertToArabicNumerals(student.phone) : '-'}</td>
                   <td className="p-4 text-sm text-slate-500">{student.job || '-'}</td>
                   <td className="p-4">
                     <div className="flex justify-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -256,6 +323,7 @@ export default function StudentsTab() {
         <StudentDetailsModal 
           student={viewingStudent} 
           onClose={() => setViewingStudent(null)} 
+          onExportMarksReport={exportMarksReport}
         />
       )}
     </div>
@@ -378,7 +446,7 @@ function StudentModal({
   );
 }
 
-function StudentDetailsModal({ student, onClose }: { student: Student; onClose: () => void }) {
+function StudentDetailsModal({ student, onClose, onExportMarksReport }: { student: Student; onClose: () => void; onExportMarksReport: (students: Student[]) => void }) {
   const { data } = useStore();
   const [expandedSubjects, setExpandedSubjects] = useState<Record<string, boolean>>({});
   
@@ -430,10 +498,10 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
     if (validRecords > 0) {
       const absentCount = validRecords - presentCount;
       const percentage = Math.round((presentCount / validRecords) * 100);
-      attFormatted = `هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`;
+      attFormatted = convertToArabicNumerals(`هاتوو: ${presentCount} | نەهاتوو: ${absentCount} (${percentage}%)`);
     }
 
-    return { id: sub.id, name: sub.name, score, attendance: attFormatted, detailedLogs };
+    return { id: sub.id, name: sub.name, score: score !== '-' ? convertToArabicNumerals(score) : '-', attendance: attFormatted, detailedLogs };
   });
 
   const average = scoreCount > 0 ? (totalScore / scoreCount).toFixed(2) : '-';
@@ -441,19 +509,21 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
   let grade = '-';
   if (average !== '-') {
     const avg = parseFloat(average);
-    if (avg >= 90) grade = 'A';
-    else if (avg >= 80) grade = 'B';
-    else if (avg >= 70) grade = 'C';
-    else if (avg >= 60) grade = 'D';
-    else grade = 'F';
+    if (avg >= 90) grade = 'نایاب';
+    else if (avg >= 80) grade = 'زۆر باش';
+    else if (avg >= 70) grade = 'باش';
+    else if (avg >= 60) grade = 'مامناوەند';
+    else if (avg >= 50) grade = 'دەرچوو';
+    else grade = 'خراپ';
   }
 
   const gradeColors: Record<string, string> = {
-    'A': 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    'B': 'bg-blue-100 text-blue-800 border-blue-200',
-    'C': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'D': 'bg-orange-100 text-orange-800 border-orange-200',
-    'F': 'bg-rose-100 text-rose-800 border-rose-200',
+    'نایاب': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    'زۆر باش': 'bg-blue-100 text-blue-800 border-blue-200',
+    'باش': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    'مامناوەند': 'bg-orange-100 text-orange-800 border-orange-200',
+    'دەرچوو': 'bg-teal-100 text-teal-800 border-teal-200',
+    'خراپ': 'bg-rose-100 text-rose-800 border-rose-200',
     '-': 'bg-slate-100 text-slate-800 border-slate-200',
   };
 
@@ -469,11 +539,11 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
     csvContent += profileHeaders.join(',') + '\n';
     const profileRow = [
       `"${student.fullName}"`,
-      `"${student.birthdate || ''}"`,
-      `"${student.phone || ''}"`,
+      `"${student.birthdate ? convertToArabicNumerals(student.birthdate) : ''}"`,
+      `"${student.phone ? convertToArabicNumerals(student.phone) : ''}"`,
       `"${student.job || ''}"`,
       `"${student.notes ? student.notes.replace(/\n/g, ' ') : ''}"`,
-      `"${student.createdAt || ''}"`
+      `"${student.createdAt ? convertToArabicNumerals(student.createdAt) : ''}"`
     ].reverse();
     csvContent += profileRow.join(',') + '\n\n';
     
@@ -493,7 +563,7 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
     classMarks.forEach(cm => {
       cm.detailedLogs.forEach(log => {
         const statusText = log.present ? 'هاتوو' : 'نەهاتوو';
-        const row = [`"${cm.name}"`, `"${log.date}"`, `"${log.weekday}"`, `"${statusText}"`].reverse();
+        const row = [`"${cm.name}"`, `"${convertToArabicNumerals(log.date)}"`, `"${log.weekday}"`, `"${statusText}"`].reverse();
         csvContent += row.join(',') + '\n';
       });
     });
@@ -538,7 +608,7 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
                 <Clock className="w-5 h-5 text-indigo-500" />
                 <div>
                   <p className="text-xs font-bold text-indigo-700">ڕێکەوت و کاتی زیادکردن</p>
-                  <p className="text-sm font-medium text-indigo-900 mt-1" dir="ltr">{student.createdAt}</p>
+                  <p className="text-sm font-medium text-indigo-900 mt-1" style={{ direction: 'rtl', unicodeBidi: 'isolate' }}>{student.createdAt ? convertToArabicNumerals(student.createdAt) : '-'}</p>
                 </div>
               </div>
             </div>
@@ -554,14 +624,14 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
                 <Clock className="w-5 h-5 text-slate-400 mt-0.5" />
                 <div>
                   <p className="text-xs text-slate-500 font-medium">مێژووی لەدایکبوون</p>
-                  <p className="text-sm font-bold text-slate-800">{student.birthdate || '-'}</p>
+                  <p className="text-sm font-bold text-slate-800">{student.birthdate ? convertToArabicNumerals(student.birthdate) : '-'}</p>
                 </div>
               </div>
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-start gap-3">
                 <Phone className="w-5 h-5 text-slate-400 mt-0.5" />
                 <div>
                   <p className="text-xs text-slate-500 font-medium">ژمارەی پەیوەندی</p>
-                  <p className="text-sm font-bold text-slate-800" dir="ltr">{student.phone || '-'}</p>
+                  <p className="text-sm font-bold text-slate-800" dir="ltr">{student.phone ? convertToArabicNumerals(student.phone) : '-'}</p>
                 </div>
               </div>
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-start gap-3 sm:col-span-2">
@@ -621,7 +691,7 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
                                 cm.detailedLogs.filter(l => l.present).map((log, lidx) => (
                                   <div key={`p-${lidx}`} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-emerald-100 text-sm shadow-sm">
                                     <div className="text-slate-600 font-medium">
-                                      {log.date} <span className="text-slate-400 font-normal">({log.weekday})</span>
+                                      {convertToArabicNumerals(log.date)} <span className="text-slate-400 font-normal">({log.weekday})</span>
                                     </div>
                                     <span className="text-emerald-600 font-bold text-[10px] sm:text-xs bg-emerald-50 px-2 py-1 rounded border border-emerald-100">هاتوو</span>
                                   </div>
@@ -641,7 +711,7 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
                                 cm.detailedLogs.filter(l => !l.present).map((log, lidx) => (
                                   <div key={`a-${lidx}`} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-rose-100 text-sm shadow-sm">
                                     <div className="text-slate-600 font-medium">
-                                      {log.date} <span className="text-slate-400 font-normal">({log.weekday})</span>
+                                      {convertToArabicNumerals(log.date)} <span className="text-slate-400 font-normal">({log.weekday})</span>
                                     </div>
                                     <span className="text-rose-600 font-bold text-[10px] sm:text-xs bg-rose-50 px-2 py-1 rounded border border-rose-100">نەهاتوو</span>
                                   </div>
@@ -662,24 +732,31 @@ function StudentDetailsModal({ student, onClose }: { student: Student; onClose: 
             </div>
             
             <div className="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-200">
-              <div className="text-slate-600 font-medium">تێکڕای نمرە (Final Mark):</div>
+              <div className="text-slate-600 font-medium">تێکڕای نمرە:</div>
               <div className="flex items-center gap-4">
-                <div className="text-xl font-bold font-mono text-slate-800">{average}</div>
+                <div className="text-xl font-bold font-mono text-slate-800">{average !== '-' ? convertToArabicNumerals(average) : '-'}</div>
                 <div className={`px-3 py-1 rounded-lg text-sm font-bold border ${gradeColors[grade] || gradeColors['-']}`}>
-                  Grade {grade}
+                  {grade}
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Export Button */}
-          <div className="pt-2 border-t border-slate-100 flex justify-end">
+          {/* Export Buttons */}
+          <div className="pt-2 border-t border-slate-100 flex flex-wrap justify-end gap-3 mt-4">
+            <button
+              onClick={() => onExportMarksReport([student])}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl transition-colors font-medium text-sm border border-emerald-100 shadow-sm"
+            >
+              <FileText className="w-4 h-4" />
+              داگرتنی ڕاپۆرتی نمرە
+            </button>
             <button
               onClick={exportStudentData}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-xl transition-colors font-medium text-sm border border-indigo-100"
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-xl transition-colors font-medium text-sm border border-indigo-100 shadow-sm"
             >
               <Download className="w-4 h-4" />
-              داگرتنی زانیارییەکانی فێرخواز (Excel / CSV)
+              داگرتنی زانیارییەکانی فێرخواز
             </button>
           </div>
         </div>

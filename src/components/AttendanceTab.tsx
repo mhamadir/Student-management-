@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../store';
 import { Check, X, Calendar as CalendarIcon, Save, Download, Trash2, AlertCircle } from 'lucide-react';
 import { AttendanceRecord } from '../types';
-import { getKurdishWeekday } from '../utils';
+import { getKurdishWeekday, convertToArabicNumerals } from '../utils';
 import ConfirmModal from './ConfirmModal';
 
 export default function AttendanceTab() {
@@ -85,7 +85,7 @@ export default function AttendanceTab() {
         if (student) {
           const statusText = r.present ? 'ئامادەیە' : 'ئامادە نییە';
           const row = [
-            attendanceRecord.date,
+            `"${convertToArabicNumerals(attendanceRecord.date)}"`,
             `"${weekday}"`,
             `"${subjectName}"`,
             `"${student.fullName}"`,
@@ -176,7 +176,7 @@ export default function AttendanceTab() {
         const statusText = r.present ? 'ئامادەیە' : 'ئامادە نییە';
         const row = [
           `"${subjectName}"`,
-          `"${record.date}"`,
+          `"${convertToArabicNumerals(record.date)}"`,
           `"${weekday}"`,
           `"${student.fullName}"`,
           `"${statusText}"`
@@ -275,20 +275,20 @@ export default function AttendanceTab() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-xs text-slate-500 mb-1">کۆی فێرخوازان</p>
-            <p className="text-2xl font-bold">{students.length}</p>
+            <p className="text-2xl font-bold">{convertToArabicNumerals(students.length)}</p>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-xs text-emerald-600 mb-1">ئامادەبووەکان</p>
-            <p className="text-2xl font-bold text-emerald-600">{presentCount}</p>
+            <p className="text-2xl font-bold text-emerald-600">{convertToArabicNumerals(presentCount)}</p>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-xs text-rose-600 mb-1">نەهاتووەکان</p>
-            <p className="text-2xl font-bold text-rose-600">{absentCount}</p>
+            <p className="text-2xl font-bold text-rose-600">{convertToArabicNumerals(absentCount)}</p>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <p className="text-xs text-indigo-600 mb-1">ڕێژەی ئامادەبوون</p>
             <p className="text-2xl font-bold text-indigo-600">
-              {students.length > 0 ? Math.round((presentCount / students.length) * 100) : 0}٪
+              {convertToArabicNumerals(students.length > 0 ? Math.round((presentCount / students.length) * 100) : 0)}٪
             </p>
           </div>
         </div>
@@ -313,9 +313,9 @@ export default function AttendanceTab() {
                         key={student.id} 
                         className={`transition-colors ${isPresent ? 'hover:bg-slate-50' : 'bg-rose-50/30 hover:bg-rose-50/50'}`}
                       >
-                        <td className="p-4 text-slate-400 font-mono text-sm">{(idx + 1).toString().padStart(2, '0')}</td>
+                        <td className="p-4 text-slate-400 font-mono text-sm">{convertToArabicNumerals((idx + 1).toString().padStart(2, '0'))}</td>
                         <td className="p-4 font-semibold text-slate-800">{student.fullName}</td>
-                        <td className="p-4 text-xs font-mono text-slate-600" dir="ltr">{student.phone || '-'}</td>
+                        <td className="p-4 text-xs font-mono text-slate-600" dir="ltr">{student.phone ? convertToArabicNumerals(student.phone) : '-'}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-4">
                             <label className="flex items-center gap-2 cursor-pointer">
