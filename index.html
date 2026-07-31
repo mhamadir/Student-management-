@@ -12,7 +12,15 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="فێرخوازان">
-    <link rel="apple-touch-icon" href="./icon.svg" />
+    <link rel="apple-touch-icon" href="./icon.svg" />    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered:', reg.scope))
+            .catch(err => console.log('Service Worker failed:', err));
+        });
+      }
+    </script>
     <script type="module" crossorigin>(function(){const N=document.createElement("link").relList;if(N&&N.supports&&N.supports("modulepreload"))return;for(const B of document.querySelectorAll('link[rel="modulepreload"]'))X(B);new MutationObserver(B=>{for(const U of B)if(U.type==="childList")for(const Te of U.addedNodes)Te.tagName==="LINK"&&Te.rel==="modulepreload"&&X(Te)}).observe(document,{childList:!0,subtree:!0});function K(B){const U={};return B.integrity&&(U.integrity=B.integrity),B.referrerPolicy&&(U.referrerPolicy=B.referrerPolicy),B.crossOrigin==="use-credentials"?U.credentials="include":B.crossOrigin==="anonymous"?U.credentials="omit":U.credentials="same-origin",U}function X(B){if(B.ep)return;B.ep=!0;const U=K(B);fetch(B.href,U)}})();var Hp={exports:{}},Kr={},kp={exports:{}},Vu={exports:{}};Vu.exports;var jN;function _E(){return jN||(jN=1,(function(E,N){/**
  * @license React
  * react.development.js
