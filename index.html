@@ -295,12 +295,432 @@ Learn more: https://react.dev/warnings/version-mismatch`))})(),typeof Map=="func
 You might need to use a local HTTP server (instead of file://): https://react.dev/link/react-devtools-faq`:""),"font-weight:bold")}Mu.createRoot=function(e,t){if(!Se(e))throw Error("Target container is not a DOM element.");Bg(e);var n=!1,a="",l=U0,o=H0,s=k0;return t!=null&&(t.hydrate?console.warn("hydrate through createRoot is deprecated. Use ReactDOMClient.hydrateRoot(container, <App />) instead."):typeof t=="object"&&t!==null&&t.$$typeof===Oa&&console.error(`You passed a JSX element to createRoot. You probably meant to call root.render instead. Example usage:
 
   let root = createRoot(domContainer);
-  root.render(<App />);`),t.unstable_strictMode===!0&&(n=!0),t.identifierPrefix!==void 0&&(a=t.identifierPrefix),t.onUncaughtError!==void 0&&(l=t.onUncaughtError),t.onCaughtError!==void 0&&(o=t.onCaughtError),t.onRecoverableError!==void 0&&(s=t.onRecoverableError)),t=wg(e,1,!1,null,null,n,a,null,l,o,s,kg),e[Vl]=t.current,Ld(e),new im(t)},Mu.hydrateRoot=function(e,t,n){if(!Se(e))throw Error("Target container is not a DOM element.");Bg(e),t===void 0&&console.error("Must provide initial children as second argument to hydrateRoot. Example usage: hydrateRoot(domContainer, <App />)");var a=!1,l="",o=U0,s=H0,i=k0,c=null;return n!=null&&(n.unstable_strictMode===!0&&(a=!0),n.identifierPrefix!==void 0&&(l=n.identifierPrefix),n.onUncaughtError!==void 0&&(o=n.onUncaughtError),n.onCaughtError!==void 0&&(s=n.onCaughtError),n.onRecoverableError!==void 0&&(i=n.onRecoverableError),n.formState!==void 0&&(c=n.formState)),t=wg(e,1,!0,t,n??null,a,l,c,o,s,i,kg),t.context=Rg(null),n=t.current,a=jn(n),a=ma(a),l=El(a),l.callback=null,Tl(n,l,a),va(a,"hydrateRoot()",null),n=a,t.current.lanes=n,yt(t,n),Ra(t),e[Vl]=t.current,Ld(e),new $c(t)},Mu.version="19.2.8",typeof __REACT_DEVTOOLS_GLOBAL_HOOK__<"u"&&typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop=="function"&&__REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error())})(),Mu}var UN;function qE(){return UN||(UN=1,Bp.exports=YE()),Bp.exports}var LE=qE();const zu=E=>{const N=["١ شەممە","٢ شەممە","٣ شەممە","٤ شەممە","٥ شەممە","هەینی","شەممە"],[K,X,B]=E.split("-").map(Number);if(!K||!X||!B)return"";const U=new Date(K,X-1,B);return N[U.getDay()]||""},lo=E=>{const N={"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"};return String(E).replace(/[٠-٩]/g,K=>N[K])},be=E=>{const N={0:"٠",1:"١",2:"٢",3:"٣",4:"٤",5:"٥",6:"٦",7:"٧",8:"٨",9:"٩"};return String(E).replace(/[0-9]/g,K=>N[K])},$E=()=>{const E=new Date,N=E.getFullYear(),K=String(E.getMonth()+1).padStart(2,"0"),X=String(E.getDate()).padStart(2,"0"),B=String(E.getHours()).padStart(2,"0"),U=String(E.getMinutes()).padStart(2,"0"),D=["١ شەممە","٢ شەممە","٣ شەممە","٤ شەممە","٥ شەممە","هەینی","شەممە"][E.getDay()],oe=`${N}/${K}/${X} - ${D} - ${B}:${U}`;return be(oe)},_u="pwa_teachers",HN={teachers:[],students:[],subjects:[],marks:[],attendance:[]},ei=E=>{const N=[];let K="",X=!1;for(let B=0;B<E.length;B++){const U=E[B];U==='"'?X&&E[B+1]==='"'?(K+='"',B++):X=!X:U===","&&!X?(N.push(K.trim()),K=""):K+=U}return N.push(K.trim()),N.map(B=>B.replace(/^"(.*)"$/,"$1").trim())},GN=ge.createContext(null),GE=({children:E})=>{const[N,K]=ge.useState(()=>{try{const z=localStorage.getItem("pwa_teachers");if(z){const p=JSON.parse(z);return{teachers:Array.isArray(p?.teachers)?p.teachers:[],students:Array.isArray(p?.students)?p.students:[],subjects:Array.isArray(p?.subjects)?p.subjects:[],marks:Array.isArray(p?.marks)?p.marks:[],attendance:Array.isArray(p?.attendance)?p.attendance:[]}}}catch(O){console.error(O)}return{teachers:[],students:[],subjects:[],marks:[],attendance:[]}}),[X,B]=ge.useState(()=>{try{return localStorage.getItem("app_active_teacher_id")||""}catch(O){return""}});ge.useEffect(()=>{try{localStorage.setItem("pwa_teachers",JSON.stringify(N))}catch(e){}},[N]),ge.useEffect(()=>{try{if(X){localStorage.setItem("app_active_teacher_id",X)}else if(N?.teachers&&N.teachers.length>0){const firstId=N.teachers[0].id;B(firstId);localStorage.setItem("app_active_teacher_id",firstId)}else{localStorage.removeItem("app_active_teacher_id")}}catch(e){}},[X,N?.teachers]);const D=()=>Math.random().toString(36).substring(2,9),oe=z=>{if(!z)return;const v={id:D(),name:z};K(O=>{const curT=Array.isArray(O?.teachers)?O.teachers:[];const nS={teachers:[...curT,v],students:Array.isArray(O?.students)?O.students:[],subjects:Array.isArray(O?.subjects)?O.subjects:[],marks:Array.isArray(O?.marks)?O.marks:[],attendance:Array.isArray(O?.attendance)?O.attendance:[]};try{localStorage.setItem("pwa_teachers",JSON.stringify(nS))}catch(e){}return nS});if(!X){B(v.id);try{localStorage.setItem("app_active_teacher_id",v.id)}catch(e){}}},Be=z=>{K(O=>{const nS={...O,teachers:(O.teachers||[]).filter(v=>v.id!==z),students:(O.students||[]).filter(v=>v.teacherId!==z),subjects:(O.subjects||[]).filter(v=>v.teacherId!==z),attendance:(O.attendance||[]).filter(v=>v.teacherId!==z)};try{localStorage.setItem("pwa_teachers",JSON.stringify(nS))}catch(e){}return nS});if(X===z){B("");try{localStorage.removeItem("app_active_teacher_id")}catch(e){}}},he=z=>{const nSt={...z,id:D()};K(O=>{const curS=Array.isArray(O?.students)?O.students:[];const nS={teachers:Array.isArray(O?.teachers)?O.teachers:[],students:[...curS,nSt],subjects:Array.isArray(O?.subjects)?O.subjects:[],marks:Array.isArray(O?.marks)?O.marks:[],attendance:Array.isArray(O?.attendance)?O.attendance:[]};try{localStorage.setItem("pwa_teachers",JSON.stringify(nS))}catch(e){}return nS})},_=z=>{K(v=>({...v,students:v.students.map(O=>O.id===z.id?z:O)}))},S=z=>{K(v=>({...v,students:v.students.filter(O=>O.id!==z),marks:v.marks.filter(O=>O.studentId!==z),subjects:v.subjects.map(O=>({...O,enrolledStudentIds:O.enrolledStudentIds.filter(H=>H!==z)}))}))},Y=z=>{K(v=>({...v,subjects:[...v.subjects,{...z,id:D()}]}))},ie=z=>{K(v=>({...v,subjects:v.subjects.map(O=>O.id===z.id?z:O)}))},qe=z=>{K(v=>({...v,subjects:v.subjects.filter(O=>O.id!==z),marks:v.marks.filter(O=>O.subjectId!==z)}))},Se=(z,v,O)=>{K(H=>{const C=H.marks.find(te=>te.studentId===z&&te.subjectId===v);return C?{...H,marks:H.marks.map(te=>te.id===C.id?{...te,score:O}:te)}:{...H,marks:[...H.marks,{id:D(),studentId:z,subjectId:v,score:O}]}})},J=z=>{K(v=>{const O=v.attendance.find(H=>H.id===z.id);return O?{...v,attendance:v.attendance.map(H=>H.id===O.id?z:H)}:{...v,attendance:[...v.attendance,z]}})},Me=z=>{K(v=>({...v,attendance:v.attendance.filter(O=>O.id!==z)}))},_e=()=>{K(z=>({...z,attendance:z.attendance.filter(v=>v.teacherId!==X)}))},me=(z,v)=>{K(O=>({...O,marks:O.marks.filter(H=>v&&v!=="all"?!(H.studentId===z&&H.subjectId===v):H.studentId!==z)}))},Ve=()=>{K(z=>{const v=z.subjects.filter(O=>O.teacherId===X).map(O=>O.id);return{...z,marks:z.marks.filter(O=>!v.includes(O.subjectId))}})},Ie=()=>{let z="\uFEFF";const v=N.teachers.find(T=>T.id===X),O=v?v.name:"";z+=`"مامۆستا: ${O}"
+  root.render(<App />);`),t.unstable_strictMode===!0&&(n=!0),t.identifierPrefix!==void 0&&(a=t.identifierPrefix),t.onUncaughtError!==void 0&&(l=t.onUncaughtError),t.onCaughtError!==void 0&&(o=t.onCaughtError),t.onRecoverableError!==void 0&&(s=t.onRecoverableError)),t=wg(e,1,!1,null,null,n,a,null,l,o,s,kg),e[Vl]=t.current,Ld(e),new im(t)},Mu.hydrateRoot=function(e,t,n){if(!Se(e))throw Error("Target container is not a DOM element.");Bg(e),t===void 0&&console.error("Must provide initial children as second argument to hydrateRoot. Example usage: hydrateRoot(domContainer, <App />)");var a=!1,l="",o=U0,s=H0,i=k0,c=null;return n!=null&&(n.unstable_strictMode===!0&&(a=!0),n.identifierPrefix!==void 0&&(l=n.identifierPrefix),n.onUncaughtError!==void 0&&(o=n.onUncaughtError),n.onCaughtError!==void 0&&(s=n.onCaughtError),n.onRecoverableError!==void 0&&(i=n.onRecoverableError),n.formState!==void 0&&(c=n.formState)),t=wg(e,1,!0,t,n??null,a,l,c,o,s,i,kg),t.context=Rg(null),n=t.current,a=jn(n),a=ma(a),l=El(a),l.callback=null,Tl(n,l,a),va(a,"hydrateRoot()",null),n=a,t.current.lanes=n,yt(t,n),Ra(t),e[Vl]=t.current,Ld(e),new $c(t)},Mu.version="19.2.8",typeof __REACT_DEVTOOLS_GLOBAL_HOOK__<"u"&&typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop=="function"&&__REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error())})(),Mu}var UN;function qE(){return UN||(UN=1,Bp.exports=YE()),Bp.exports}var LE=qE();const zu=E=>{const N=["١ شەممە","٢ شەممە","٣ شەممە","٤ شەممە","٥ شەممە","هەینی","شەممە"],[K,X,B]=E.split("-").map(Number);if(!K||!X||!B)return"";const U=new Date(K,X-1,B);return N[U.getDay()]||""},lo=E=>{const N={"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"};return String(E).replace(/[٠-٩]/g,K=>N[K])},be=E=>{const N={0:"٠",1:"١",2:"٢",3:"٣",4:"٤",5:"٥",6:"٦",7:"٧",8:"٨",9:"٩"};return String(E).replace(/[0-9]/g,K=>N[K])},$E=()=>{const E=new Date,N=E.getFullYear(),K=String(E.getMonth()+1).padStart(2,"0"),X=String(E.getDate()).padStart(2,"0"),B=String(E.getHours()).padStart(2,"0"),U=String(E.getMinutes()).padStart(2,"0"),D=["١ شەممە","٢ شەممە","٣ شەممە","٤ شەممە","٥ شەممە","هەینی","شەممە"][E.getDay()],oe=`${N}/${K}/${X} - ${D} - ${B}:${U}`;return be(oe)},_u="pwa_teachers",HN={teachers:[],students:[],subjects:[],marks:[],attendance:[]},ei=E=>{const N=[];let K="",X=!1;for(let B=0;B<E.length;B++){const U=E[B];U==='"'?X&&E[B+1]==='"'?(K+='"',B++):X=!X:U===","&&!X?(N.push(K.trim()),K=""):K+=U}return N.push(K.trim()),N.map(B=>B.replace(/^"(.*)"$/,"$1").trim())},GN=ge.createContext(null),GE=({children:E})=>{
+  const loadLocalState = () => {
+    try {
+      const pwaData = localStorage.getItem("pwa_teachers");
+      if (pwaData) {
+        const parsed = JSON.parse(pwaData);
+        if (parsed && typeof parsed === "object") {
+          return {
+            teachers: Array.isArray(parsed.teachers) ? parsed.teachers : [],
+            students: Array.isArray(parsed.students) ? parsed.students : [],
+            subjects: Array.isArray(parsed.subjects) ? parsed.subjects : [],
+            marks: Array.isArray(parsed.marks) ? parsed.marks : [],
+            attendance: Array.isArray(parsed.attendance) ? parsed.attendance : []
+          };
+        }
+      }
+      const rawT = localStorage.getItem("teachers");
+      const rawS = localStorage.getItem("students");
+      if (rawT || rawS) {
+        return {
+          teachers: rawT ? JSON.parse(rawT) : [],
+          students: rawS ? JSON.parse(rawS) : [],
+          subjects: [],
+          marks: [],
+          attendance: []
+        };
+      }
+    } catch (e) {
+      console.error("Error reading localStorage:", e);
+    }
+    return { teachers: [], students: [], subjects: [], marks: [], attendance: [] };
+  };
 
-`;const H=["ناوی تەواو","مێژووی لەدایکبوون","ژمارەی مۆبایل","پیشە","وانەکان","نمرەکانی تاقیکردنەوە","تێکڕا (نمرە)","ئاست","ڕێژەی ئامادەبوون"].reverse();z+=H.join(",")+`
-`,N.students.filter(T=>T.teacherId===X).forEach(T=>{const j=N.subjects.filter(Ue=>Ue.teacherId===T.teacherId),k=j.map(Ue=>Ue.name).join(" | ");let Z=0,y=0;const L=j.map(Ue=>{const W=N.marks.find(Ut=>Ut.studentId===T.id&&Ut.subjectId===Ue.id),nt=(W==null?void 0:W.score)??"-";return typeof nt=="number"&&(Z+=nt,y++),`${Ue.name}: ${nt}`}).join(" | "),Q=y>0?(Z/y).toFixed(2):"-";let q="-";if(Q!=="-"){const Ue=parseFloat(Q);Ue>=90?q="نایاب":Ue>=80?q="زۆر باش":Ue>=70?q="باش":Ue>=60?q="مامناوەند":Ue>=50?q="دەرچوو":q="خراپ"}const ee=N.attendance.filter(Ue=>Ue.teacherId===T.teacherId);let Ee=0,fe=ee.length;ee.forEach(Ue=>{const W=Ue.records.find(nt=>nt.studentId===T.id);W!=null&&W.present&&Ee++});const We=fe>0?be(Math.round(Ee/fe*100)+"%"):"-",ze=[`"${T.fullName}"`,`"${T.birthdate?be(T.birthdate):""}"`,`"${T.phone?be(T.phone):""}"`,`"${T.job}"`,`"${k}"`,`"${be(L)}"`,`"${Q!=="-"?be(Q):"-"}"`,`"${q}"`,`"${We}"`].reverse();z+=ze.join(",")+`
-`});const te=new Blob([z],{type:"text/csv;charset=utf-8;"}),ae=URL.createObjectURL(te),M=document.createElement("a");M.href=ae,M.download="Full_Database_Export.csv",M.click(),URL.revokeObjectURL(ae)},Je=z=>{try{const v=JSON.parse(z);return v.teachers&&v.students?(K(v),!0):!1}catch{return!1}},I=z=>{try{const O=z.replace(/^\uFEFF/,"").replace(/\r/g,"").split(`
-`).map(j=>j.trim()).filter(j=>j.length>0);if(O.length===0)return{success:!1,message:"فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە"};let H="";const C=O.find(j=>j.includes("مامۆستا:"));if(C){let j=C;j.includes("مامۆستا:")&&(j=j.substring(j.indexOf("مامۆستا:")+8)),H=j.replace(/^["'\s]+|["'\s]+$/g,"").trim()}if(!O.some(j=>j.includes("ناوی تەواو")||j.includes("ژمارەی فێرخواز")||j.includes("مێژووی لەدایکبوون")||j.includes("ناوی فێرخواز")||j.includes("زانیارییەکانی فێرخواز")))return{success:!1,message:"فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە"};const ae=[];for(let j=0;j<O.length;j++)(O[j].includes("ناوی تەواو")||O[j].includes("ناوی فێرخواز")||O[j].includes("ژمارەی پەیوەندی"))&&(O[j].includes("ناوی تەواو")&&O[j].includes("مێژووی لەدایکبوون")||O[j].includes("ژمارەی پەیوەندی")&&O[j].includes("ناوی تەواو")||O[j].includes("ناوی تەواو")&&O[j].split(",").length>1&&!O[j].includes('"'))&&ae.push(j);if(ae.length===0)return{success:!1,message:"فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە"};const M=[];for(let j=0;j<ae.length;j++){const k=ae[j],Z=ae[j+1]||O.length;if(!O[k+1])continue;const y=ei(O[k]),L=O[k+1],Q=ei(L);if(Q.length<1)continue;const q=st=>y.findIndex(dn=>st.some(Pt=>dn.includes(Pt)));let ee=q(["ناوی تەواو","ناوی فێرخواز"]),Ee=q(["ژمارەی فێرخواز","ژمارە"]),fe=q(["مێژووی لەدایکبوون","لەدایکبوون"]),We=q(["پەیوەندی","مۆبایل"]),ze=q(["پیشە"]),Ue=q(["تێبینی"]),W=q(["کاتی زیادکردن"]);ee===-1&&Q.length>=5&&(Q.length>=7?(W=0,Ue=1,ze=2,We=3,fe=4,Ee=5,ee=6):Q.length===6?(Ue=0,ze=1,We=2,fe=3,Ee=4,ee=5):(Ue=0,ze=1,We=2,fe=3,ee=4));const nt=ee!==-1?Q[ee]||"":Q[Q.length-1]||"",Ut=lo(Ee!==-1&&Q[Ee]||""),Fn=lo(fe!==-1&&Q[fe]||""),ra=lo(We!==-1&&Q[We]||""),Ke=ze!==-1&&Q[ze]||"",Ht=Ue!==-1&&Q[Ue]||"",gl=lo(W!==-1&&Q[W]||"");if(!nt)continue;let La=-1;for(let st=k;st<Z;st++)if(O[st].includes("وانەکان و نمرەکان")){La=st;break}const se=[];let $a=Z,kt=-1;for(let st=k;st<Z;st++)if(O[st].includes("تۆماری ئامادەبوون (ڕۆژانە)")){kt=st;break}if(kt!==-1&&($a=kt),La!==-1&&O[La+1]){const st=ei(O[La+1]);let dn=st.findIndex(yt=>yt.includes("وانە")),Pt=st.findIndex(yt=>yt.includes("نمرە"));dn===-1&&(dn=2),Pt===-1&&(Pt=1);let Nn=La+2;for(;Nn<$a;){const yt=ei(O[Nn]);if(yt.length>=2){const St=yt[dn]||yt[yt.length-1]||"";let xn=yt[Pt]||"";if(xn=lo(xn),St&&!St.includes("تێکڕا:")&&!St.includes("کۆنمرە:")){let en="";xn!==""&&xn!=="-"&&(en=Number(xn),isNaN(en)&&(en="")),se.push({name:St,score:en})}}Nn++}}const fa=[];if(kt!==-1&&O[kt+1]){const st=ei(O[kt+1]);let dn=st.findIndex(St=>St.includes("وانە")),Pt=st.findIndex(St=>St.includes("ڕێکەوت")),Nn=st.findIndex(St=>St.includes("ئامادەبوون")||St.includes("باری"));dn===-1&&(dn=3),Pt===-1&&(Pt=2),Nn===-1&&(Nn=0);let yt=kt+2;for(;yt<Z;){const St=ei(O[yt]);if(St.length>=3){const xn=St[dn]||"";let en=St[Pt]||"";en=lo(en);const da=St[Nn]||"",ma=da.includes("هاتوو")&&!da.includes("نەهاتوو");en&&fa.push({name:xn,date:en,present:ma})}yt++}}M.push({fullName:nt,rollNumber:Ut,birthdate:Fn,phone:ra,job:Ke,notes:Ht,createdAt:gl,marksData:se,attendanceData:fa})}if(M.length===0)return{success:!1,message:"فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە"};let T=X;return K(j=>{const k={...j};let Z=X;return Z||(k.teachers.length>0?Z=k.teachers[0].id:(Z="t_"+Date.now().toString(36),k.teachers.push({id:Z,name:"مامۆستای سەرەکی"}))),T=Z,M.forEach(y=>{let L=k.students.find(Q=>y.phone&&Q.phone&&Q.phone===y.phone&&Q.fullName===y.fullName||Q.fullName===y.fullName);L?(y.fullName&&(L.fullName=y.fullName),y.rollNumber&&(L.rollNumber=y.rollNumber),y.birthdate&&(L.birthdate=y.birthdate),y.phone&&(L.phone=y.phone),y.job&&(L.job=y.job),y.notes&&(L.notes=y.notes),y.createdAt&&(L.createdAt=y.createdAt),H&&(L.teacherName=H),L.teacherId=Z):(L={id:"s_"+Date.now().toString(36)+Math.random().toString(36).substring(2,7),teacherId:Z,teacherName:H||void 0,fullName:y.fullName,rollNumber:y.rollNumber||"",birthdate:y.birthdate,phone:y.phone,job:y.job,notes:y.notes,createdAt:y.createdAt||new Date().toISOString().split("T")[0]},k.students.push(L)),y.marksData.forEach(Q=>{let q=k.subjects.find(Ee=>Ee.name===Q.name&&Ee.teacherId===Z);q||(q={id:"sub_"+Date.now().toString(36)+Math.random().toString(36).substring(2,7),teacherId:Z,name:Q.name,enrolledStudentIds:[]},k.subjects.push(q)),q.enrolledStudentIds.includes(L.id)||q.enrolledStudentIds.push(L.id);let ee=k.marks.find(Ee=>Ee.studentId===L.id&&Ee.subjectId===q.id);ee?ee.score=Q.score:k.marks.push({id:"m_"+Date.now().toString(36)+Math.random().toString(36).substring(2,7),studentId:L.id,subjectId:q.id,score:Q.score})}),y.attendanceData.forEach(Q=>{let q=k.subjects.find(ee=>ee.name===Q.name&&ee.teacherId===Z);if(q){let ee=k.attendance.find(fe=>fe.date===Q.date&&fe.subjectId===q.id);ee||(ee={id:"att_"+Date.now().toString(36)+Math.random().toString(36).substring(2,7),date:Q.date,teacherId:Z,subjectId:q.id,records:[]},k.attendance.push(ee));let Ee=ee.records.find(fe=>fe.studentId===L.id);Ee?Ee.present=Q.present:ee.records.push({studentId:L.id,present:Q.present})}})}),k}),T&&B(T),{success:!0,message:M.length>1?"زانیارییەکانی سەرجەم فێرخوازان بەسەرکەوتوویی هاوردە کران!":"زانیارییەکانی فێرخوازەکە بەسەرکەوتوویی هاوردە کران!"}}catch{return{success:!1,message:"فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە"}}};return u.jsxDEV(GN.Provider,{value:{data:N,activeTeacherId:X,setActiveTeacherId:B,addTeacher:oe,deleteTeacher:Be,addStudent:he,updateStudent:_,deleteStudent:S,addSubject:Y,updateSubject:ie,deleteSubject:qe,setMark:Se,saveAttendance:J,deleteAttendanceRecord:Me,clearAllAttendance:_e,deleteStudentMarks:me,clearAllMarks:Ve,exportData:Ie,importData:Je,importStudentCSV:I},children:E},void 0,!1,{fileName:"/app/applet/src/store.tsx",lineNumber:620,columnNumber:5},void 0)},Io=()=>{const E=ge.useContext(GN);if(!E)throw new Error("useStore must be used within StoreProvider");return E};/**
+  const loadLocalActiveTeacher = () => {
+    try {
+      return localStorage.getItem("app_active_teacher_id") || localStorage.getItem("teachers_active_id") || localStorage.getItem("activeTeacherId") || "";
+    } catch (e) {
+      return "";
+    }
+  };
+
+  const [N, K] = ge.useState(() => loadLocalState());
+  const [X, B] = ge.useState(() => loadLocalActiveTeacher());
+
+  const saveToStorage = (dataState, activeId) => {
+    try {
+      if (dataState) {
+        localStorage.setItem("pwa_teachers", JSON.stringify(dataState));
+        localStorage.setItem("teachers", JSON.stringify(dataState.teachers || []));
+        localStorage.setItem("students", JSON.stringify(dataState.students || []));
+      }
+      if (activeId !== undefined) {
+        if (activeId) {
+          localStorage.setItem("app_active_teacher_id", activeId);
+          localStorage.setItem("teachers_active_id", activeId);
+          localStorage.setItem("activeTeacherId", activeId);
+        } else {
+          localStorage.removeItem("app_active_teacher_id");
+          localStorage.removeItem("teachers_active_id");
+          localStorage.removeItem("activeTeacherId");
+        }
+      }
+    } catch (e) {
+      console.error("Error saving to localStorage:", e);
+    }
+  };
+
+  // Initial loading effect with try-catch offline fallback safeguard
+  ge.useEffect(() => {
+    const syncData = async () => {
+      try {
+        // If an online API endpoint exists, try fetching here:
+        // const res = await fetch('/api/data');
+        // if (!res.ok) throw new Error("Network error");
+        // const onlineData = await res.json();
+        // K(onlineData);
+        // saveToStorage(onlineData, X);
+      } catch (err) {
+        // OFFLINE FETCH CATCH BLOCK: load immediately from localStorage
+        const cachedState = loadLocalState();
+        const cachedActiveId = loadLocalActiveTeacher();
+        if (cachedState && (cachedState.teachers.length > 0 || cachedState.students.length > 0)) {
+          K(cachedState);
+        }
+        if (cachedActiveId && !X) {
+          B(cachedActiveId);
+        }
+      }
+    };
+    syncData();
+  }, []);
+
+  ge.useEffect(() => {
+    saveToStorage(N, X);
+  }, [N]);
+
+  ge.useEffect(() => {
+    try {
+      if (X) {
+        localStorage.setItem("app_active_teacher_id", X);
+        localStorage.setItem("activeTeacherId", X);
+      } else if (N?.teachers && N.teachers.length > 0) {
+        const firstId = N.teachers[0].id;
+        B(firstId);
+        saveToStorage(N, firstId);
+      } else {
+        localStorage.removeItem("app_active_teacher_id");
+        localStorage.removeItem("activeTeacherId");
+      }
+    } catch (e) {}
+  }, [X, N?.teachers]);
+
+  const D = () => Math.random().toString(36).substring(2, 9);
+
+  const oe = z => {
+    if (!z) return;
+    const v = { id: D(), name: z };
+    K(O => {
+      const curT = Array.isArray(O?.teachers) ? O.teachers : [];
+      const nS = {
+        teachers: [...curT, v],
+        students: Array.isArray(O?.students) ? O.students : [],
+        subjects: Array.isArray(O?.subjects) ? O.subjects : [],
+        marks: Array.isArray(O?.marks) ? O.marks : [],
+        attendance: Array.isArray(O?.attendance) ? O.attendance : []
+      };
+      saveToStorage(nS, X || v.id);
+      return nS;
+    });
+    if (!X) {
+      B(v.id);
+      saveToStorage(N, v.id);
+    }
+  };
+
+  const Be = z => {
+    K(O => {
+      const nS = {
+        ...O,
+        teachers: (O.teachers || []).filter(v => v.id !== z),
+        students: (O.students || []).filter(v => v.teacherId !== z),
+        subjects: (O.subjects || []).filter(v => v.teacherId !== z),
+        attendance: (O.attendance || []).filter(v => v.teacherId !== z)
+      };
+      saveToStorage(nS, X === z ? "" : X);
+      return nS;
+    });
+    if (X === z) {
+      B("");
+      saveToStorage(null, "");
+    }
+  };
+
+  const he = z => {
+    const nSt = { ...z, id: D() };
+    K(O => {
+      const curS = Array.isArray(O?.students) ? O.students : [];
+      const nS = {
+        teachers: Array.isArray(O?.teachers) ? O.teachers : [],
+        students: [...curS, nSt],
+        subjects: Array.isArray(O?.subjects) ? O.subjects : [],
+        marks: Array.isArray(O?.marks) ? O.marks : [],
+        attendance: Array.isArray(O?.attendance) ? O.attendance : []
+      };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const _ = z => {
+    K(v => {
+      const nS = { ...v, students: v.students.map(O => O.id === z.id ? z : O) };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const S = z => {
+    K(v => {
+      const nS = {
+        ...v,
+        students: v.students.filter(O => O.id !== z),
+        marks: v.marks.filter(O => O.studentId !== z),
+        subjects: v.subjects.map(O => ({ ...O, enrolledStudentIds: O.enrolledStudentIds.filter(H => H !== z) }))
+      };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const Y = z => {
+    K(v => {
+      const nS = { ...v, subjects: [...v.subjects, { ...z, id: D() }] };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const ie = z => {
+    K(v => {
+      const nS = { ...v, subjects: v.subjects.map(O => O.id === z.id ? z : O) };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const qe = z => {
+    K(v => {
+      const nS = {
+        ...v,
+        subjects: v.subjects.filter(O => O.id !== z),
+        marks: v.marks.filter(O => O.subjectId !== z)
+      };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const Se = (z, v, O) => {
+    K(H => {
+      const C = H.marks.find(te => te.studentId === z && te.subjectId === v);
+      const nS = C
+        ? { ...H, marks: H.marks.map(te => te.id === C.id ? { ...te, score: O } : te) }
+        : { ...H, marks: [...H.marks, { id: D(), studentId: z, subjectId: v, score: O }] };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const J = z => {
+    K(v => {
+      const O = v.attendance.find(H => H.id === z.id);
+      const nS = O
+        ? { ...v, attendance: v.attendance.map(H => H.id === O.id ? z : H) }
+        : { ...v, attendance: [...v.attendance, z] };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const Me = z => {
+    K(v => {
+      const nS = { ...v, attendance: v.attendance.filter(O => O.id !== z) };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const _e = () => {
+    K(z => {
+      const nS = { ...z, attendance: z.attendance.filter(v => v.teacherId !== X) };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const me = (z, v) => {
+    K(O => {
+      const nS = {
+        ...O,
+        marks: O.marks.filter(H => v && v !== "all" ? !(H.studentId === z && H.subjectId === v) : H.studentId !== z)
+      };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const Ve = () => {
+    K(z => {
+      const v = z.subjects.filter(O => O.teacherId === X).map(O => O.id);
+      const nS = { ...z, marks: z.marks.filter(O => !v.includes(O.subjectId)) };
+      saveToStorage(nS, X);
+      return nS;
+    });
+  };
+
+  const Ie = () => {
+    let z = "\uFEFF";
+    const v = N.teachers.find(T => T.id === X), O = v ? v.name : "";
+    z += `"مامۆستا: ${O}"`;
+    const H = ["ناوی تەواو", "مێژووی لەدایکبوون", "ژمارەی مۆبایل", "پیشە", "وانەکان", "نمرەکانی تاقیکردنەوە", "تێکڕا (نمرە)", "ئاست", "ڕێژەی ئامادەبوون"].reverse();
+    z += H.join(",") + `\n`;
+    N.students.filter(T => T.teacherId === X).forEach(T => {
+      const j = N.subjects.filter(Ue => Ue.teacherId === T.teacherId), k = j.map(Ue => Ue.name).join(" | ");
+      let Z = 0, y = 0;
+      const L = j.map(Ue => {
+        const W = N.marks.find(Ut => Ut.studentId === T.id && Ut.subjectId === Ue.id), nt = (W == null ? void 0 : W.score) ?? "-";
+        return typeof nt == "number" && (Z += nt, y++), `${Ue.name}: ${nt}`;
+      }).join(" | "), Q = y > 0 ? (Z / y).toFixed(2) : "-";
+      let q = "-";
+      if (Q !== "-") {
+        const Ue = parseFloat(Q);
+        Ue >= 90 ? q = "نایاب" : Ue >= 80 ? q = "زۆر باش" : Ue >= 70 ? q = "باش" : Ue >= 60 ? q = "مامناوەند" : Ue >= 50 ? q = "دەرچوو" : q = "خراپ";
+      }
+      const ee = N.attendance.filter(Ue => Ue.teacherId === T.teacherId);
+      let Ee = 0, fe = ee.length;
+      ee.forEach(Ue => {
+        const W = Ue.records.find(nt => nt.studentId === T.id);
+        W != null && W.present && Ee++;
+      });
+      const We = fe > 0 ? be(Math.round(Ee / fe * 100) + "%") : "-", ze = [`"${T.fullName}"`, `"${T.birthdate ? be(T.birthdate) : ""}"`, `"${T.phone ? be(T.phone) : ""}"`, `"${T.job}"`, `"${k}"`, `"${be(L)}"`, `"${Q !== "-" ? be(Q) : "-"}"`, `"${q}"`, `"${We}"`].reverse();
+      z += ze.join(",") + `\n`;
+    });
+    const te = new Blob([z], { type: "text/csv;charset=utf-8;" }), ae = URL.createObjectURL(te), M = document.createElement("a");
+    M.href = ae, M.download = "Full_Database_Export.csv", M.click(), URL.revokeObjectURL(ae);
+  };
+
+  const Je = z => {
+    try {
+      const v = JSON.parse(z);
+      if (v.teachers && v.students) {
+        K(v);
+        saveToStorage(v, X);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  const I = z => {
+    try {
+      const O = z.replace(/^\uFEFF/, "").replace(/\r/g, "").split(`\n`).map(j => j.trim()).filter(j => j.length > 0);
+      if (O.length === 0) return { success: false, message: "فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە" };
+      let H = "";
+      const C = O.find(j => j.includes("مامۆستا:"));
+      if (C) {
+        let j = C;
+        j.includes("مامۆستا:") && (j = j.substring(j.indexOf("مامۆستا:") + 8)), H = j.replace(/^["'\s]+|["'\s]+$/g, "").trim();
+      }
+      if (!O.some(j => j.includes("ناوی تەواو") || j.includes("ژمارەی فێرخواز") || j.includes("مێژووی لەدایکبوون") || j.includes("ناوی فێرخواز") || j.includes("زانیارییەکانی فێرخواز"))) return { success: false, message: "فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە" };
+      const ae = [];
+      for (let j = 0; j < O.length; j++) (O[j].includes("ناوی تەواو") || O[j].includes("ناوی فێرخواز") || O[j].includes("ژمارەی پەیوەندی")) && (O[j].includes("ناوی تەواو") && O[j].includes("مێژووی لەدایکبوون") || O[j].includes("ژمارەی پەیوەندی") && O[j].includes("ناوی تەواو") || O[j].includes("ناوی تەواو") && O[j].split(",").length > 1 && !O[j].includes('"')) && ae.push(j);
+      if (ae.length === 0) return { success: false, message: "فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە" };
+      const M = [];
+      for (let j = 0; j < ae.length; j++) {
+        const k = ae[j], Z = ae[j + 1] || O.length;
+        if (!O[k + 1]) continue;
+        const y = ei(O[k]), L = O[k + 1], Q = ei(L);
+        if (Q.length < 1) continue;
+        const q = st => y.findIndex(dn => st.some(Pt => dn.includes(Pt)));
+        let ee = q(["ناوی تەواو", "ناوی فێرخواز"]), Ee = q(["ژمارەی فێرخواز", "ژمارە"]), fe = q(["مێژووی لەدایکبوون", "لەدایکبوون"]), We = q(["پەیوەندی", "مۆبایل"]), ze = q(["پیشە"]), Ue = q(["تێبینی"]), W = q(["کاتی زیادکردن"]);
+        ee === -1 && Q.length >= 5 && (Q.length >= 7 ? (W = 0, Ue = 1, ze = 2, We = 3, fe = 4, Ee = 5, ee = 6) : Q.length === 6 ? (Ue = 0, ze = 1, We = 2, fe = 3, Ee = 4, ee = 5) : (Ue = 0, ze = 1, We = 2, fe = 3, ee = 4));
+        const nt = ee !== -1 ? Q[ee] || "" : Q[Q.length - 1] || "", Ut = lo(Ee !== -1 && Q[Ee] || ""), Fn = lo(fe !== -1 && Q[fe] || ""), ra = lo(We !== -1 && Q[We] || ""), Ke = ze !== -1 && Q[ze] || "", Ht = Ue !== -1 && Q[Ue] || "", gl = lo(W !== -1 && Q[W] || "");
+        if (!nt) continue;
+        let La = -1;
+        for (let st = k; st < Z; st++) if (O[st].includes("وانەکان و نمرەکان")) { La = st; break; }
+        const se = [];
+        let $a = Z, kt = -1;
+        for (let st = k; st < Z; st++) if (O[st].includes("تۆماری ئامادەبوون (ڕۆژانە)")) { kt = st; break; }
+        if (kt !== -1 && ($a = kt), La !== -1 && O[La + 1]) {
+          const st = ei(O[La + 1]);
+          let dn = st.findIndex(yt => yt.includes("وانە")), Pt = st.findIndex(yt => yt.includes("نمرە"));
+          dn === -1 && (dn = 2), Pt === -1 && (Pt = 1);
+          let Nn = La + 2;
+          for (; Nn < $a;) {
+            const yt = ei(O[Nn]);
+            if (yt.length >= 2) {
+              const St = yt[dn] || yt[yt.length - 1] || "";
+              let xn = yt[Pt] || "";
+              if (xn = lo(xn), St && !St.includes("تێکڕا:") && !St.includes("کۆنمرە:")) {
+                let en = "";
+                xn !== "" && xn !== "-" && (en = Number(xn), isNaN(en) && (en = "")), se.push({ name: St, score: en });
+              }
+            }
+            Nn++;
+          }
+        }
+        const fa = [];
+        if (kt !== -1 && O[kt + 1]) {
+          const st = ei(O[kt + 1]);
+          let dn = st.findIndex(St => St.includes("وانە")), Pt = st.findIndex(St => St.includes("ڕێکەوت")), Nn = st.findIndex(St => St.includes("ئامادەبوون") || St.includes("باری"));
+          dn === -1 && (dn = 3), Pt === -1 && (Pt = 2), Nn === -1 && (Nn = 0);
+          let yt = kt + 2;
+          for (; yt < Z;) {
+            const St = ei(O[yt]);
+            if (St.length >= 3) {
+              const xn = St[dn] || "";
+              let en = St[Pt] || "";
+              en = lo(en);
+              const da = St[Nn] || "", ma = da.includes("هاتوو") && !da.includes("نەهاتوو");
+              en && fa.push({ name: xn, date: en, present: ma });
+            }
+            yt++;
+          }
+        }
+        M.push({ fullName: nt, rollNumber: Ut, birthdate: Fn, phone: ra, job: Ke, notes: Ht, createdAt: gl, marksData: se, attendanceData: fa });
+      }
+      if (M.length === 0) return { success: false, message: "فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە" };
+      let T = X;
+      K(j => {
+        const k = { ...j };
+        let Z = X;
+        Z || (k.teachers.length > 0 ? Z = k.teachers[0].id : (Z = "t_" + Date.now().toString(36), k.teachers.push({ id: Z, name: "مامۆستای سەرەکی" })));
+        T = Z;
+        M.forEach(y => {
+          let L = k.students.find(Q => y.phone && Q.phone && Q.phone === y.phone && Q.fullName === y.fullName || Q.fullName === y.fullName);
+          L ? (y.fullName && (L.fullName = y.fullName), y.rollNumber && (L.rollNumber = y.rollNumber), y.birthdate && (L.birthdate = y.birthdate), y.phone && (L.phone = y.phone), y.job && (L.job = y.job), y.notes && (L.notes = y.notes), y.createdAt && (L.createdAt = y.createdAt), H && (L.teacherName = H), L.teacherId = Z) : (L = { id: "s_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 7), teacherId: Z, teacherName: H || void 0, fullName: y.fullName, rollNumber: y.rollNumber || "", birthdate: y.birthdate, phone: y.phone, job: y.job, notes: y.notes, createdAt: y.createdAt || new Date().toISOString().split("T")[0] }, k.students.push(L));
+          y.marksData.forEach(Q => {
+            let q = k.subjects.find(Ee => Ee.name === Q.name && Ee.teacherId === Z);
+            q || (q = { id: "sub_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 7), teacherId: Z, name: Q.name, enrolledStudentIds: [] }, k.subjects.push(q)), q.enrolledStudentIds.includes(L.id) || q.enrolledStudentIds.push(L.id);
+            let ee = k.marks.find(Ee => Ee.studentId === L.id && Ee.subjectId === q.id);
+            ee ? ee.score = Q.score : k.marks.push({ id: "m_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 7), studentId: L.id, subjectId: q.id, score: Q.score });
+          });
+          y.attendanceData.forEach(Q => {
+            let q = k.subjects.find(ee => ee.name === Q.name && ee.teacherId === Z);
+            if (q) {
+              let ee = k.attendance.find(fe => fe.date === Q.date && fe.subjectId === q.id);
+              ee || (ee = { id: "att_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 7), date: Q.date, teacherId: Z, subjectId: q.id, records: [] }, k.attendance.push(ee));
+              let Ee = ee.records.find(fe => fe.studentId === L.id);
+              Ee ? Ee.present = Q.present : ee.records.push({ studentId: L.id, present: Q.present });
+            }
+          });
+        });
+        saveToStorage(k, T);
+        return k;
+      });
+      T && B(T);
+      return { success: true, message: M.length > 1 ? "زانیارییەکانی سەرجەم فێرخوازان بەسەرکەوتوویی هاوردە کران!" : "زانیارییەکانی فێرخوازەکە بەسەرکەوتوویی هاوردە کران!" };
+    } catch {
+      return { success: false, message: "فایلی هەڵبژێردراو نەناسراوە! تکایە فایلی دروستی فێرخوازان بەکاربهێنە" };
+    }
+  };
+
+  return u.jsxDEV(GN.Provider,{value:{data:N,activeTeacherId:X,setActiveTeacherId:B,addTeacher:oe,deleteTeacher:Be,addStudent:he,updateStudent:_,deleteStudent:S,addSubject:Y,updateSubject:ie,deleteSubject:qe,setMark:Se,saveAttendance:J,deleteAttendanceRecord:Me,clearAllAttendance:_e,deleteStudentMarks:me,clearAllMarks:Ve,exportData:Ie,importData:Je,importStudentCSV:I},children:E},void 0,!1,{fileName:"/app/applet/src/store.tsx",lineNumber:620,columnNumber:5},void 0)},Io=()=>{const E=ge.useContext(GN);if(!E)throw new Error("useStore must be used within StoreProvider");return E};/**
  * @license lucide-react v0.546.0 - ISC
  *
  * This source code is licensed under the ISC license.
