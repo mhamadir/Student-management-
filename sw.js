@@ -1,14 +1,13 @@
-const CACHE_NAME = 'student-app-v4';
+const CACHE_NAME = 'student-app-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json',
-  'https://cdn.tailwindcss.com'
+  './manifest.json'
 ];
 
-// 1. Install & Force Cache Immediate Download
+// Install Event: Cache essential assets immediately
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Force active status immediately without browser restart
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -16,34 +15,34 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 2. Activate & Clear Old Cache Containers
+// Activate Event: Claim clients so it works instantly without reload
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim()) // Takes control of open tabs immediately
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
   );
 });
 
-// 3. Bulletproof Offline Fetch & Fallback Strategy
+// Fetch Event: Cache-First Strategy with Navigation Fallback
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return cached file immediately if found
       if (cachedResponse) {
         return cachedResponse;
       }
 
-      // Otherwise try fetching from network and dynamically cache valid responses
       return fetch(event.request)
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
@@ -55,8 +54,8 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // CRITICAL: If offline and navigating to app home, serve index.html from cache
-          if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
+          // IF OFFLINE: Force return cached index.html for any page navigation!
+          if (event.request.mode === 'navigate') {
             return caches.match('./index.html') || caches.match('./');
           }
         });
