@@ -6,9 +6,9 @@ const ASSETS_TO_CACHE = [
   'https://cdn.tailwindcss.com'
 ];
 
-// 1. Install & Pre-cache
+// 1. Install & Cache Core Files Immediately
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Force active status immediately
+  self.skipWaiting(); // Activates immediately without waiting for browser restart
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -16,7 +16,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 2. Activate & Claim Immediately (Clean Old Caches)
+// 2. Activate & Clean Old Caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -27,18 +27,18 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => self.clients.claim()) // Claim all clients immediately
+    }).then(() => self.clients.claim()) // Takes control of the open app immediately
   );
 });
 
-// 3. Silent Offline Strategy (Cache-First)
+// 3. Cache-First Fetch Strategy
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        return cachedResponse;
+        return cachedResponse; // Serve from local disk
       }
       return fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
