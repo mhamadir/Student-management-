@@ -2,10 +2,11 @@
   "name": "بەڕێوەبەری فێرخوازان",
   "short_name": "فێرخوازان",
   "description": "سیستەمی بەڕێوەبردنی نمرە و ئامادەبوونی فێرخوازان",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#4f46e5",
   "theme_color": "#4f46e5",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%234f46e5'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='300'>🎓</text></svg>",
